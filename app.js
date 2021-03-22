@@ -21,18 +21,15 @@ app.get("/api/users", async function(req, res){
 
 app.post('/api/users', jsonParser, async function (req, res) {
     try {
-        const userName = req.body.name
-        const userAge = req.body.age
+        const {name, age} = req.body
         const create_at = Date.now();
-        const user = {name: userName, age: userAge, create_at: create_at}
+        const user = { name, age, create_at }
 
         const contents = await fs.readFile(filePath, "utf-8")
             const users = JSON.parse(contents)
             const id = Math.max.apply(
                 Math,
-                users.map(function (o) {
-                    return o.id
-                })
+                users.map(user => user.id)
             )
             user.id = id + 1
             users.push(user)
@@ -43,6 +40,8 @@ app.post('/api/users', jsonParser, async function (req, res) {
         if (!req.body) return res.sendStatus(400)
     }
 })
+
+// Express Middleware
 
 app.listen(3000, function () {
     console.log('Сервер ожидает подключения...')
