@@ -7,11 +7,12 @@ const jsonParser = bodyParser.json()
 const filePath = "users.json";
 
 // Express Middleware
-app.get("/api/users", function(req, res, next) {
-    const date = Date.now()
-    console.log(req.path, date);
+app.use(function (req, res, next) {
+    console.log(req.path, Date.now());
     next();
-    }, async function(req, res, next){
+});
+
+app.get("/api/users", async function(req, res) {
     try {
         const contents =  await fs.readFile(filePath, "utf8");
         const users = JSON.parse(contents);
