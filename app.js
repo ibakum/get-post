@@ -6,7 +6,12 @@ const app = express()
 const jsonParser = bodyParser.json()
 const filePath = "users.json";
 
-app.get("/api/users", async function(req, res){
+// Express Middleware
+app.get("/api/users", function(req, res, next) {
+    const date = Date.now()
+    console.log(req.path, date);
+    next();
+    }, async function(req, res, next){
     try {
         const contents =  await fs.readFile(filePath, "utf8");
         const users = JSON.parse(contents);
@@ -40,8 +45,6 @@ app.post('/api/users', jsonParser, async function (req, res) {
         if (!req.body) return res.sendStatus(400)
     }
 })
-
-// Express Middleware
 
 app.listen(3000, function () {
     console.log('Сервер ожидает подключения...')
