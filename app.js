@@ -15,7 +15,9 @@ app.use(function (req, res, next) {
 app.get("/api/users", async function(req, res) {
     try {
         const contents =  await fs.readFile(filePath, "utf8");
+        console.log(typeof contents)
         const users = JSON.parse(contents);
+        console.log(users)
         const data = users.map(item => {
             return {id: item.id, name: item.name, age: item.age}
         })
