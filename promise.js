@@ -42,9 +42,8 @@ app.post('/api/users', jsonParser, function (req, res) {
             )
             user.id = id + 1
             users.push(user)
-            return JSON.stringify(users)
-        })
-        .then((data) => {
+            const data = JSON.stringify(users)
+
             fs.writeFile(filePath, data)
                 .then(()=> {
                     console.log(user)
