@@ -3,6 +3,7 @@ const sequelize = new Sequelize("users", "postgres", "user", {
     dialect: "postgres",
     host: "localhost"
 });
+const Joi = require('joi');
 
 const User = sequelize.define("user", {
     id: {
@@ -21,26 +22,43 @@ const User = sequelize.define("user", {
     }
 });
 
-module.exports.getUsers = async function(req, res) {
+module.exports.getUsers = async function (req, res) {
     try {
-        const data = await User.findAll({raw:true})
+        const data = await User.findAll({raw: true})
         res.send(data);
     } catch (err) {
-        throw err
+        return Error(res);
     }
 };
 
-module.exports.createUser = async function(req, res) {
+function Error(response) {
+    return response.status(500).json({
+        message: 'server error'
+    })
+}
+
+module.exports.createUser = async function (req, res) {
     try {
-        console.log(req)
+        const schema = Joi.object({
+            name: Joi.string().min(3).required(),
+            age: Joi.number()
+        });
+        const {value: {name, age}, error} = schema.validate(req.body);
+        console.log(error)
+        if (error) {
+           return res.status(422).json({
+                message: 'Invalid request',
+                data: error
+            })
+        }
         const user = await User.create({
-            id: req.query.id,
-            name: req.body.name,
-            age: req.body.age
+            name: name,
+            age: age
         })
-        res.send(user)
-    } catch (req) {
-        if (!req.body) return res.sendStatus(400)
+        return res.send(user)
+
+    } catch (err) {
+        return Error(res)
     }
 }
 

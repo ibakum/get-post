@@ -3,7 +3,7 @@ const usersRouter = express.Router();
 const bodyParser = require('body-parser')
 const jsonParser = bodyParser.json()
 
-const users_controller = require('../controllers/usersControllers');
+const users_controller = require('../controllers/users');
 
 usersRouter.use(function (req, res, next) {
     console.log(req.path, Date.now());
